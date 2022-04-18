@@ -54,7 +54,7 @@ func slotTime(slot int) string {
 	return timeSlot
 }
 
-func isBooked(query bool) string {
+func printBookedStatus(query bool) string {
 	if query {
 		return "booked"
 	} else {
@@ -66,6 +66,6 @@ func isBooked(query bool) string {
 func printNameAndTime(dentist Dentist) {
 	fmt.Printf("Dentist %v's timeslots:", dentist.name)
 	for i := 0; i < 7; i++ {
-		fmt.Printf("\n%v is %v.", slotTime(i), isBooked(dentist.timeSlots[i]))
+		fmt.Printf("\n%v is %v.", slotTime(i), printBookedStatus(dentist.timeSlots[i]))
 	}
 }

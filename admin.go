@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strconv"
 )
 
 type node struct {
@@ -100,7 +101,6 @@ func (p *stack) getDentist(name string) *node {
 		fmt.Println(item.name)
 		if item.name == name {
 			dentistNode = tempStack.top
-			fmt.Println("Match!")
 		}
 	}
 	for tempStack.top != nil {
@@ -110,7 +110,7 @@ func (p *stack) getDentist(name string) *node {
 	return dentistNode
 }
 
-func (p *stack) addAppointment() {
+func (p *stack) bookAppointment() {
 	fmt.Println("Enter the name of the dentist.")
 	p.printDentistNames()
 	var personName string
@@ -121,12 +121,39 @@ func (p *stack) addAppointment() {
 	fmt.Printf("\nsearching for... %v", personName)
 	if p.getDentist(personName).dentist.name == "" {
 		fmt.Println("No Such name!")
-		p.addAppointment()
+		p.bookAppointment()
 	} else {
 		node := p.getDentist(personName)
-		fmt.Println("Please select a time slot.")
-		for i := 0; i < 7; i++ {
-			fmt.Printf("\n%v. %v, (%v)", i+1, slotTime(i), isBooked(node.dentist.timeSlots[i]))
+		addAppointment(node)
+		printNameAndTime(node.dentist)
+	}
+}
+
+func addAppointment(node *node) {
+	fmt.Println("Please select a time slot.")
+	for i := 0; i < 7; i++ {
+		fmt.Printf("\n%v. %v, (%v)", i+1, slotTime(i), printBookedStatus(node.dentist.timeSlots[i]))
+	}
+	scanner := bufio.NewScanner(os.Stdin)
+	if scanner.Scan() {
+		timeSlotInput, err := strconv.Atoi(scanner.Text())
+		if err != nil {
+			fmt.Println("Error. Expected Int.")
+			addAppointment(node)
+		} else {
+			timeSlotInput -= 1
+			switch timeSlotInput {
+			case 0, 1, 2, 3, 4, 5, 6:
+				if node.dentist.timeSlots[timeSlotInput] {
+					fmt.Println("Dentist is already booked at " + slotTime(timeSlotInput) + "!")
+					addAppointment(node)
+				} else {
+					node.dentist.timeSlots[timeSlotInput] = true
+					fmt.Println("Appointment set at " + slotTime(timeSlotInput) + ".")
+				}
+
+			default:
+			}
 		}
 	}
 }

@@ -1,5 +1,5 @@
 package main
 
 func main() {
-	dentistList.addAppointment()
+	dentistList.bookAppointment()
 }
