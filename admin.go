@@ -77,6 +77,20 @@ func (p *stack) printDentistList() {
 	}
 }
 
+// like printDentistList but just names only.
+func (p *stack) printDentistNames() {
+	tempStack := &stack{nil, 0}
+	for p.top != nil {
+		item, _ := p.pop()
+		tempStack.push(item)
+		fmt.Println(item.name)
+	}
+	for tempStack.top != nil {
+		item, _ := tempStack.pop()
+		p.push(item)
+	}
+}
+
 func (p *stack) getDentist(name string) *node {
 	tempStack := &stack{nil, 0}
 	dentistNode := &node{}
@@ -98,6 +112,7 @@ func (p *stack) getDentist(name string) *node {
 
 func (p *stack) addAppointment() {
 	fmt.Println("Enter the name of the dentist.")
+	p.printDentistNames()
 	var personName string
 	scanner := bufio.NewScanner(os.Stdin)
 	if scanner.Scan() {
