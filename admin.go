@@ -5,18 +5,7 @@ import (
 )
 
 var blankTimeSlots [7]bool
-
-func init() {
-	dentistList = &stack{nil, 0}
-
-	addDentist("Zane Ping")
-	addDentist("Amos Tan")
-	addDentist("Kelsey Sim")
-	addDentist("Serene Keng")
-	addDentist("Serene Keng")
-	dentistList = dentistList.sortStack()
-
-}
+var csvFileName = "main.csv"
 
 func (p *stack) doesNameExist(name string) bool {
 	tempStack := &stack{nil, 0}
@@ -34,13 +23,12 @@ func (p *stack) doesNameExist(name string) bool {
 	}
 	return exists
 }
-
-func addDentist(name string) error {
+func addDentist(name string, slots [7]bool) error {
 	if name != "" {
 		if dentistList.doesNameExist(name) {
 			return errors.New("Name exists!")
 		} else {
-			d := Dentist{name, blankTimeSlots}
+			d := Dentist{name, slots}
 			dentistList.push(d)
 			return nil
 		}
@@ -48,7 +36,6 @@ func addDentist(name string) error {
 		return errors.New("Name is empty!")
 	}
 }
-
 func removeDentist(name string) error {
 	if name != "" {
 		if dentistList.doesNameExist(name) {
@@ -60,4 +47,19 @@ func removeDentist(name string) error {
 	} else {
 		return errors.New("Dentist name is empty!")
 	}
+}
+func init() {
+
+	dentistList = &stack{nil, 0}
+	if !csvExists(csvFileName) {
+		addDentist("Zane Ping", blankTimeSlots)
+		addDentist("Amos Tan", blankTimeSlots)
+		addDentist("Kelsey Sim", blankTimeSlots)
+		addDentist("Serene Keng", blankTimeSlots)
+		dentistList = dentistList.sortStack()
+		dentistList.tempSaveData()
+	} else {
+		loadCSVData()
+	}
+
 }

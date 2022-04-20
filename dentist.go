@@ -127,7 +127,29 @@ func (p *stack) printDentistNames() {
 	}
 }
 
-func (p *stack) availableDoctorsAtTime(index int) {
+func (p *stack) getAvailableDentistsAtTime(index int) {
+	tempStack := &stack{nil, 0}
+	hasDentist := false
+	if index >= 0 && index <= 6 {
+		fmt.Println("Dentists available at", getTimeSlot(index)+":")
+		for p.top != nil {
+			item, _ := p.pop()
+			tempStack.push(item)
+			if item.timeSlots[index] == false {
+				fmt.Println(item.name)
+				hasDentist = true
+			}
+		}
+		for tempStack.top != nil {
+			item, _ := tempStack.pop()
+			p.push(item)
+		}
+	} else {
+		fmt.Println("Input out of range.")
+	}
+	if !hasDentist {
+		fmt.Println("No dentists available!")
+	}
 
 }
 
@@ -166,7 +188,7 @@ func (p *stack) bookAppointment() {
 func addAppointment(node *node) {
 	fmt.Println("Please select a time slot.")
 	for i := 0; i < 7; i++ {
-		fmt.Printf("\n%v. %v, (%v)", i+1, slotTime(i), printBookedStatus(node.dentist.timeSlots[i]))
+		fmt.Printf("\n%v. %v, (%v)", i+1, getTimeSlot(i), printBookedStatus(node.dentist.timeSlots[i]))
 	}
 	scanner := bufio.NewScanner(os.Stdin)
 	if scanner.Scan() {
@@ -182,14 +204,15 @@ func addAppointment(node *node) {
 			switch timeSlotInput {
 			case 0, 1, 2, 3, 4, 5, 6:
 				if node.dentist.timeSlots[timeSlotInput] {
-					fmt.Println("Dentist is already booked at " + slotTime(timeSlotInput) + "!")
+					fmt.Println("Dentist is already booked at " + getTimeSlot(timeSlotInput) + "!")
 					addAppointment(node)
 				} else {
 					node.dentist.timeSlots[timeSlotInput] = true
-					fmt.Println("Appointment set at " + slotTime(timeSlotInput) + ".")
+					fmt.Println("Appointment set at " + getTimeSlot(timeSlotInput) + ".")
 				}
 
 			default:
+				fmt.Println("Invalid time slot.")
 			}
 		}
 	}
@@ -230,7 +253,7 @@ func (p *stack) beginRemoveAppointment() {
 func removeAppointment(node *node) {
 	fmt.Println("Please select a time slot.")
 	for i := 0; i < 7; i++ {
-		fmt.Printf("\n%v. %v, (%v)", i+1, slotTime(i), printBookedStatus(node.dentist.timeSlots[i]))
+		fmt.Printf("\n%v. %v, (%v)", i+1, getTimeSlot(i), printBookedStatus(node.dentist.timeSlots[i]))
 	}
 	scanner := bufio.NewScanner(os.Stdin)
 	if scanner.Scan() {
@@ -240,26 +263,27 @@ func removeAppointment(node *node) {
 		timeSlotInput, err := strconv.Atoi(scanner.Text())
 		if err != nil {
 			fmt.Println("Error. Expected Int.")
-			addAppointment(node)
+			removeAppointment(node)
 		} else {
 			timeSlotInput -= 1
 			switch timeSlotInput {
 			case 0, 1, 2, 3, 4, 5, 6:
 				if !node.dentist.timeSlots[timeSlotInput] {
-					fmt.Println("Dentist does not have a booking at " + slotTime(timeSlotInput) + "!")
+					fmt.Println("Dentist does not have a booking at " + getTimeSlot(timeSlotInput) + "!")
 					removeAppointment(node)
 				} else {
 					node.dentist.timeSlots[timeSlotInput] = false
-					fmt.Println("Appointment removed at " + slotTime(timeSlotInput) + ".")
+					fmt.Println("Appointment removed at " + getTimeSlot(timeSlotInput) + ".")
 				}
 
 			default:
+
 			}
 		}
 	}
 }
 
-func slotTime(slot int) string {
+func getTimeSlot(slot int) string {
 	var timeSlot string
 	switch slot {
 	case 0:
@@ -292,6 +316,6 @@ func printBookedStatus(query bool) string {
 func printNameAndTime(dentist Dentist) {
 	fmt.Printf("\nDentist %v's timeslots:", dentist.name)
 	for i := 0; i < 7; i++ {
-		fmt.Printf("\n%v is %v.", slotTime(i), printBookedStatus(dentist.timeSlots[i]))
+		fmt.Printf("\n%v is %v.", getTimeSlot(i), printBookedStatus(dentist.timeSlots[i]))
 	}
 }
