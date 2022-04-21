@@ -2,10 +2,14 @@ package main
 
 import (
 	"encoding/csv"
-	"fmt"
 	"os"
 	"strconv"
 )
+
+/*
+CSV Format
+8 Columns: Name, 9-10, 10-11, 11-12, 1-2, 2-3, 3-4, 4-5
+*/
 
 var data [][]string
 
@@ -40,7 +44,7 @@ func convDentistToStr(dentist Dentist) []string {
 
 func dentistConversion(input [][]string) {
 	dentist := Dentist{}
-	for i := 1; i < len(input); i++ {
+	for i := len(input) - 1; i >= 1; i-- {
 		dentist.name = input[i][0]
 		for i := 1; i < 7; i++ {
 
@@ -75,10 +79,9 @@ func loadCSVData() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Println("file opened")
+	//fmt.Println("file opened")
 	r := csv.NewReader(file)
 	rows, err := r.ReadAll()
-	fmt.Println(rows)
 	if err != nil {
 		panic(err)
 	}
