@@ -8,6 +8,18 @@ import (
 	"sync"
 )
 
+/*
+Main Features
+- Make Appointment
+- List Available Times for Selected Doctor
+- Search for Available Doctors at given timeslot
+- Edit Appointment to either change timing / remove timeslot.
+- Save to main.csv
+
+Admin Features
+- Add or Remove Doctor
+*/
+
 type mainMenuOptions int
 
 const (
@@ -26,16 +38,6 @@ func main() {
 	mainMenu()
 }
 
-/*
-Main Features
-- Make Appointment
-- List Available Times for Selected Doctor
-- Search for Available Doctors at given timeslot
-- Edit Appointment to either change timing / remove timeslot.
-
-Admin Features
-- Add or Remove Doctor
-*/
 func mainMenu() {
 	scanner := bufio.NewScanner(os.Stdin)
 	fmt.Println("\nDentist Appointment System\n=================================")
@@ -140,9 +142,9 @@ func getAvailableDentistInterface() {
 
 }
 
+// queries if user wants to save before exitting.
 func exit() {
-
-	fmt.Print("Save? y/n\n")
+	fmt.Print("Save? (y/n)\n")
 	s := bufio.NewScanner(os.Stdin)
 	if s.Scan() {
 		if s.Text() == "y" || s.Text() == "Y" {

@@ -23,6 +23,7 @@ func (p *stack) doesNameExist(name string) bool {
 	}
 	return exists
 }
+
 func addDentist(name string, slots [7]bool) error {
 	if name != "" {
 		if dentistList.doesNameExist(name) {
@@ -48,8 +49,9 @@ func removeDentist(name string) error {
 		return errors.New("Dentist name is empty!")
 	}
 }
-func init() {
 
+// if there are no csv files then we make the first one
+func init() {
 	dentistList = &stack{nil, 0}
 	if !csvExists(csvFileName) {
 		addDentist("Zane Ping", blankTimeSlots)
@@ -61,5 +63,4 @@ func init() {
 	} else {
 		loadCSVData()
 	}
-
 }
